@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Services;
 
 namespace HousingColonyPOS
@@ -33,8 +34,18 @@ namespace HousingColonyPOS
             services.AddDbContext<POSContext>(
                         options => options.UseSqlServer(Configuration.GetConnectionString("Connection")
              ));
-            //Calling extension method for dependency Injection
-            services.AddDependencies((ConfigurationRoot)Configuration);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "HousingColony POS API",
+                    Version = "v1",
+                    Description = "APIs for HIForce backend",
+                });
+            });
+                //Calling extension method for dependency Injection
+                services.AddDependencies((ConfigurationRoot)Configuration);
             services.AddAutoMapper(typeof(Mappers));
             //services.AddMvc().AddFluentValidation(mvcconfiguration => mvcconfiguration.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddControllers();
@@ -49,6 +60,8 @@ namespace HousingColonyPOS
             }
 
             app.UseHttpsRedirection();
+            app.UseSwagger();
+            app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Housing Colony apis"));
 
             app.UseRouting();
 
