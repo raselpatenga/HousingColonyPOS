@@ -2,95 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HousingColonyPOS.Data;
-using HousingColonyPOS.Models;
-using HousingColonyPOS.Service;
+using AutoMapper;
+using AutoWrapper.Wrappers;
+using Common;
+using Common.DTOs;
+using Common.Helper;
+using Common.ViewModels.CategoryViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Common.IServices;
+using Common.Dtos;
 
-namespace HousingColonyPOS.Controllers
+namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
-        private CategoryService categoryService;
-        public CategoryController(POSContext context)
+        private readonly ICategoryService _CategoryService;
+        public CategoryController(ICategoryService CategoryService)
         {
-            categoryService = new CategoryService(context);
-        }
-        //Get api/category
-        [HttpGet]
-        public ActionResult<Category> GetAllCategory()
-        {
-            try
-            {
-                var list = categoryService.GetCategoryList();
-                return Ok(list);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Errore !!! This Warning {ex.Message}");
-            }
-        }
-        //Post api/category
-        [HttpPost]
-        public ActionResult Post([FromBody] Category model)
-        {
-            try
-            {
-                var message = categoryService.CategorySave(model);
-                return Ok(message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Category Save Unsuccess!! Errore this warning {ex.Message}");
-            }
-        }
-        //Put api/category/1
-        [HttpPut("{id}")]
-        public ActionResult Put(int Id, [FromBody] Category model)
-        {
-            try
-            {
-                var message = categoryService.UpdateCategory(Id, model);
-                return Ok(message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Category update Unsuccess!! Errore this warning {ex.Message}");
-            }
-        }
-        // Get api/category/1
-        [HttpGet("{id}")]
-        public ActionResult<Category> Get(int Id)
-        {
-            try
-            {
-                var data = categoryService.GetCategoryInfo(Id);
-                if (data == null)
-                    return NotFound("Data not found !!");
-                else
-                    return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Category this errore!! With this warning {ex.Message}");
-            }
+            _CategoryService = CategoryService;
         }
 
-        //Delete api/category/1
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int Id)
+        [HttpGet("GetAll")]
+        public async Task<ApiResponse> GetAll([FromQuery] CategoryFilterDTO category)
         {
-            try
-            {
-                var message = categoryService.DeleteCategory(Id);
-                return Ok(message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Unsuccessfully Dalete!! {ex.Message}");
-            }
+            return await _CategoryService.GetAll(category);
+        }
+
+        [HttpPost("Add")]
+        public async Task<ApiResponse> Add(CategoryDTO category)
+        {
+            return await _CategoryService.Add(category);
+        }
+
+        [HttpPut("Update")]
+        public async Task<ApiResponse> Update([FromBody] CategoryDTO category)
+        {
+            return await _CategoryService.Update(category);
+        }
+        [HttpGet("GetById")]
+        public async Task<ApiResponse> GetById(int id)
+        {
+            return await _CategoryService.GetById(id);
         }
     }
 }
