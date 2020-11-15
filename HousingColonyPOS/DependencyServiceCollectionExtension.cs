@@ -6,8 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Models;
 using Models.Models.Categories;
+using Models.Models.SystemUsers;
 using Models.Service;
 using Repository;
+using Services.Setup;
 
 namespace HousingColonyPOS
 {
@@ -25,6 +27,8 @@ namespace HousingColonyPOS
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ICategoryManager, CategoryManager>();
 
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUsersManager, UserManager>();
             return services;
         }
     }

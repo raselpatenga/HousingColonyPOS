@@ -41,11 +41,11 @@ namespace HousingColonyPOS
                 {
                     Title = "HousingColony POS API",
                     Version = "v1",
-                    Description = "APIs for HIForce backend",
+                    Description = "APIs for HousingColony backend",
                 });
             });
                 //Calling extension method for dependency Injection
-                services.AddDependencies((ConfigurationRoot)Configuration);
+            services.AddDependencies((ConfigurationRoot)Configuration);
             services.AddAutoMapper(typeof(Mappers));
             //services.AddMvc().AddFluentValidation(mvcconfiguration => mvcconfiguration.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddControllers();

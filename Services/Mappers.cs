@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Common.Dtos;
+using Common.Dtos.UserDTOs;
 using Common.Responses;
 using Common.ViewModels.CategoryViewModels;
+using Common.ViewModels.UserViewModels;
 using Models.Models.Categories;
+using Models.Models.SystemUsers;
 using System.Linq;
 
 namespace Services
@@ -16,6 +19,11 @@ namespace Services
             CreateMap<Result<Category>, Result<CategoryDTO>>().ReverseMap();
             CreateMap<Category, CategoryViewModel>().ReverseMap();
             CreateMap<Result<Category>, Result<CategoryViewModel>>().ReverseMap();
+
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Result<User>, Result<UserDTO>>().ReverseMap();
+            CreateMap<User, UserViewModel>().ReverseMap();
+            CreateMap<Result<User>, Result<UserViewModel>>().ReverseMap();
         }
     }
 }
