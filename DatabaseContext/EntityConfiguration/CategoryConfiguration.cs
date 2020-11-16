@@ -18,8 +18,7 @@ namespace DatabaseContext.EntityConfiguration
             builder.Property(r => r.Name).HasMaxLength(50);
 
             builder.HasOne(r => r.Group)
-                   .WithOne(r => r.Category)
-                  .HasForeignKey<Group>(r => r.GroupId);
+                   .WithMany(r => r.Categories);
         }
 
     }

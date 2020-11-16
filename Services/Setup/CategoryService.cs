@@ -35,36 +35,16 @@ namespace Models.Service
 
         public async Task<ApiResponse> GetAll(CategoryFilterDTO categoryFilter)
         {
-            //if (categoryFilter.GroupId == 0)
-            //{
-            //    return ResponseHelper.CreateErrorResponse("Hub is required");
-            //}
-            var pagedResult = await _repository.WithDetails(x => x.Name).
+            var query = _repository.GetQueryable().
+                Include(r => r.Group).
                 WhereIf(!categoryFilter.SearchText.IsNullOrWhiteSpace(), x => x.Name.Contains(categoryFilter.SearchText)).
-               
-                PageBy(categoryFilter).ToListAsync();
+                WhereIf(categoryFilter.GroupId != 0, r => r.GroupId == categoryFilter.GroupId).
+                PageBy(categoryFilter);
 
-            Result<Category> result = new Result<Category>() { results = pagedResult, totalCount = await _repository.GetCountAsync(r => r.GroupId == categoryFilter.GroupId) };
-
-            Result<CategoryViewModel> resultCategoryViewModel = new Result<CategoryViewModel>();
-
-            resultCategoryViewModel.totalCount = result.totalCount;
-
-            List<CategoryViewModel> lstCategoryViewModel = new List<CategoryViewModel>();
-            CategoryViewModel categoryViewModel;
-            foreach (var r in result.results)
-            {
-                categoryViewModel = new CategoryViewModel();
-                categoryViewModel.CreatedDate = r.CreatedDate;
-                categoryViewModel.GroupId = r.GroupId;
-                categoryViewModel.Id = r.Id;
-                categoryViewModel.Name = r.Name;
-                categoryViewModel.UpdatedDate = r.UpdatedDate;
-                lstCategoryViewModel.Add(categoryViewModel);
-
-            }
-            resultCategoryViewModel.results = lstCategoryViewModel;
-            return ResponseHelper.CreateGetSuccessResponse(resultCategoryViewModel);
+            var pagedResult = await query.ToListAsync();
+            Result<Category> result = new Result<Category>() { results = pagedResult, totalCount =  pagedResult.LongCount() };
+            var resultViewModel = _mapper.Map<Result<CategoryViewModel>>(result);
+            return ResponseHelper.CreateGetSuccessResponse(resultViewModel);
         }
 
         public async Task<ApiResponse> Add(CategoryDTO input)

@@ -8,8 +8,8 @@ namespace Models.Models
 {
     public class Group
     {
-        public int GroupId { get; set; }
+        public int Id { get; set; }
         public string GroupName { get; set; }
-        public virtual Category Category { get; set; }
+        public virtual ICollection<Category> Categories { get; set; }
     }
 }
