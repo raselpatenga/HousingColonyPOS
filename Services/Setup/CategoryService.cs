@@ -73,6 +73,7 @@ namespace Models.Service
                 return ResponseHelper.CreateErrorResponse(string.Format(Constants.NotFound, input.Name));
 
             entity.Name = input.Name;
+            entity.GroupId = input.GroupId;
 
             try
             {

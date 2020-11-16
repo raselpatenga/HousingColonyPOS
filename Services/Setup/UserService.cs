@@ -56,37 +56,17 @@ namespace Services.Setup
 
         public async Task<ApiResponse> GetAll(UserFilterDto userFilter)
         {
-            var pagedResult = await _repository.WithDetails(x => x.UserName).
+
+            var query = _repository.GetQueryable().
+                Include(r => r.Role).
                 WhereIf(!userFilter.SearchText.IsNullOrWhiteSpace(), x => x.UserName.Contains(userFilter.SearchText)).
+                WhereIf(userFilter.RoleId != 0, r => r.RoleId == userFilter.RoleId).
+                PageBy(userFilter);
 
-                PageBy(userFilter).ToListAsync();
-
-            Result<User> result = new Result<User>() { results = pagedResult, totalCount = await _repository.GetCountAsync(r => r.RoleId == userFilter.RoleId) };
-
-            Result<UserViewModel> resultUserViewModel = new Result<UserViewModel>();
-
-            resultUserViewModel.totalCount = result.totalCount;
-
-            List<UserViewModel> lstUserViewModel = new List<UserViewModel>();
-            UserViewModel userViewModel;
-            foreach (var r in result.results)
-            {
-                userViewModel = new UserViewModel();
-                userViewModel.CreatedDate = r.CreatedDate;
-                userViewModel.RoleId = r.RoleId;
-                userViewModel.Id = r.Id;
-                userViewModel.FirstName = r.FirstName;
-                userViewModel.LastName = r.LastName;
-                userViewModel.UserName = r.UserName;
-                userViewModel.Password = r.Password;
-                userViewModel.PhoneNumber = r.PhoneNumber;
-                userViewModel.isActive = r.isActive;
-                userViewModel.UpdatedDate = r.UpdatedDate;
-                lstUserViewModel.Add(userViewModel);
-
-            }
-            resultUserViewModel.results = lstUserViewModel;
-            return ResponseHelper.CreateGetSuccessResponse(resultUserViewModel);
+            var pagedResult = await query.ToListAsync();
+            Result<User> result = new Result<User>() { results = pagedResult, totalCount = pagedResult.LongCount() };
+            var resultViewModel = _mapper.Map<Result<UserViewModel>>(result);
+            return ResponseHelper.CreateGetSuccessResponse(resultViewModel);
         }
 
         public Task<ApiResponse> GetById(int id)
