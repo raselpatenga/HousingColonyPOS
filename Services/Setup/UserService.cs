@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using AutoWrapper.Wrappers;
+using Common;
 using Common.Dtos.UserDTOs;
 using Common.Helper;
 using Common.IServices;
 using Common.Responses;
+using Common.ViewModels.CategoryViewModels;
 using Common.ViewModels.UserViewModels;
 using Microsoft.EntityFrameworkCore;
 using Models.Models.SystemUsers;
@@ -11,7 +13,9 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Services.Setup
@@ -69,9 +73,15 @@ namespace Services.Setup
             return ResponseHelper.CreateGetSuccessResponse(resultViewModel);
         }
 
-        public Task<ApiResponse> GetById(int id)
+        public async Task<ApiResponse> GetById(int id)
         {
-            throw new NotImplementedException();
+            var smartFolder = await _repository.FindAsync(r => r.Id == id, true, default(CancellationToken));
+            if (smartFolder == null)
+                return ResponseHelper.CreateErrorResponse(string.Format(Constants.NotFound, "Smart Folder"));
+
+            var UserViewModel = _mapper.Map<UserViewModel>(smartFolder);
+
+            return ResponseHelper.CreateGetSuccessResponse(UserViewModel);
         }
 
         public Task<ApiResponse> Search(string searchText)
@@ -79,9 +89,31 @@ namespace Services.Setup
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> Update(UserDTO userDTO)
+        public async Task<ApiResponse> Update(UserDTO input)
         {
-            throw new NotImplementedException();
+            var entity = await _repository.GetAsync(input.Id);
+            if(entity == null)
+                return ResponseHelper.CreateErrorResponse(string.Format(Constants.NotFound, input.UserName));
+
+            entity.FirstName = input.FirstName;
+            entity.LastName = input.LastName;
+            entity.UserName = input.UserName;
+            entity.Password = input.Password;
+            entity.PhoneNumber = input.PhoneNumber;
+            entity.RoleId = input.RoleId;
+
+            try
+            {
+                entity = await _manager.CreateAsync(entity);
+            }
+            catch(Exception ex)
+            {
+                return ResponseHelper.CreateErrorResponse(ex.Message);
+            }
+            await _repository.UpdateAsync(entity);
+            await _work.Complete();
+
+            return ResponseHelper.CreateUpdateSuccessResponse();
         }
     }
 }

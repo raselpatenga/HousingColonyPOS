@@ -29,5 +29,17 @@ namespace HousingColonyPOS.Controllers
         {
             return await _UserService.Add(user);
         }
+
+        [HttpPut("Update")]
+        public async Task<ApiResponse> Update([FromBody] UserDTO user)
+        {
+            return await _UserService.Update(user);
+        }
+
+        [HttpGet("GetById")]
+        public async Task<ApiResponse> GetById(int id)
+        {
+            return await _UserService.GetById(id);
+        }
     }
 }
