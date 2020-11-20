@@ -2,6 +2,7 @@
 using AutoWrapper.Wrappers;
 using Common.Dtos.ProductDTOs;
 using Common.Dtos.UserDTOs;
+using Common.Helper;
 using Common.IServices;
 using Models.Models.Products;
 using Models.Models.SystemUsers;
@@ -28,9 +29,22 @@ namespace Services
             _work = work;
         }
 
-        public Task<ApiResponse> Add(ProductDTO productDTO)
+        public async Task<ApiResponse> Add(ProductDTO input)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<Product>(input);
+
+            try
+            {
+                entity = await _manager.CreateAsync(entity);
+            }
+            catch(Exception ex)
+            {
+                return ResponseHelper.CreateErrorResponse(ex.Message);
+            }
+            await _repository.InsertAsync(entity);
+            await _work.Complete();
+
+            return ResponseHelper.CreateAddSuccessResponse();
         }
 
         public Task<ApiResponse> Delete(int Id)

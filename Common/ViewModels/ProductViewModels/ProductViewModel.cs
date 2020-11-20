@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Common.ViewModels.ProductViewModels
 {
-    class ProductViewModel:BaseViewModel
+    public class ProductViewModel:BaseViewModel
     {
         public int Id { get; set; }
         public string ProductCode { get; set; }
