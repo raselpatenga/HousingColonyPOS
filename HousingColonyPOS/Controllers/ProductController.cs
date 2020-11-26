@@ -17,11 +17,18 @@ namespace HousingColonyPOS.Controllers
         {
             _productService = productService;
         }
+
+        [HttpGet("GetAll")]
+        public async Task<ApiResponse> GetAll([FromQuery] ProductFilterDTO product)
+        {
+            return await _productService.GetAll(product);
+        }
+
         [HttpPost("Add")]
         public async Task<ApiResponse> Add(ProductDTO product)
         {
             return await _productService.Add(product);
         }
-     
+
     }
 }

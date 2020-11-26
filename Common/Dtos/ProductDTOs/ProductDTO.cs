@@ -15,15 +15,15 @@ namespace Common.Dtos.ProductDTOs
         public float SalePrice { get; set; }
         public float DealerPrice { get; set; }
         public float CostPrice { get; set; }
-        public float? DealerCashPrice { get; set; }
-        public float? DealerDuePrice { get; set; }
-        public string? Type { get; set; }
+        public float DealerCashPrice { get; set; }
+        public float DealerDuePrice { get; set; }
+        public string Type { get; set; }
         public string Color { get; set; }
-        public float? OPQty { get; set; }
-        public int? Purchased { get; set; }
-        public int? Sold { get; set; }
-        public int? OnHand { get; set; }
-        public int isActive { get; set; }
-        public int isRow { get; set; }
+        public float OPQty { get; set; }
+        public int Purchased { get; set; }
+        public int Sold { get; set; }
+        public int OnHand { get; set; }
+        public bool isActive { get; set; }
+        public bool isRow { get; set; }
     }
 }
