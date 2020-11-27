@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Controllers;
 using AutoWrapper.Wrappers;
 using Common.Dtos.ProductDTOs;
+using Common.Dtos.UserDTOs;
 using Common.IServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,16 @@ namespace HousingColonyPOS.Controllers
         public async Task<ApiResponse> Add(ProductDTO product)
         {
             return await _productService.Add(product);
+        }
+        [HttpGet("GetById")]
+        public async Task<ApiResponse> GetById(int id)
+        {
+            return await _productService.GetById(id);
+        }
+        [HttpPut("Update")]
+        public async Task<ApiResponse> Update([FromBody] ProductDTO user)
+        {
+            return await _productService.Update(user);
         }
 
     }

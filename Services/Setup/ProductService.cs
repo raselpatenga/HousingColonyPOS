@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Services
@@ -74,9 +75,15 @@ namespace Services
             return ResponseHelper.CreateGetSuccessResponse(resultViewModel);
         }
 
-        public Task<ApiResponse> GetById(int id)
+        public async Task<ApiResponse> GetById(int id)
         {
-            throw new NotImplementedException();
+            var smartFolder = await _repository.FindAsync(r => r.Id == id, true, default(CancellationToken));
+            if (smartFolder == null)
+                return ResponseHelper.CreateErrorResponse(string.Format(Constants.NotFound, "Smart Folder"));
+
+            var ProductViewModel = _mapper.Map<ProductViewModel>(smartFolder);
+
+            return ResponseHelper.CreateGetSuccessResponse(ProductViewModel);
         }
 
         public Task<ApiResponse> Search(string searchText)
