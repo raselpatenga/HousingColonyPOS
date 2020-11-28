@@ -31,7 +31,7 @@ namespace API.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<ApiResponse> Add(CategoryDTO category)
+        public async Task<ApiResponse> Add([FromBody] CategoryDTO category)
         {
             return await _CategoryService.Add(category);
         }
@@ -42,7 +42,7 @@ namespace API.Controllers
             return await _CategoryService.Update(category);
         }
         [HttpGet("GetById")]
-        public async Task<ApiResponse> GetById(int id)
+        public async Task<ApiResponse> GetById(string id)
         {
             return await _CategoryService.GetById(id);
         }

@@ -24,10 +24,10 @@ namespace Models.Models.Categories
             return entity;
         }
 
-        protected virtual async Task ValidateAsync(string name, int id = 0)
+        protected virtual async Task ValidateAsync(string name, string id = "")
         {
             var entity = await _repository.FindAsync(x => x.Name == name);
-            if (entity != null && entity.Id != id)
+            if (entity != null && !string.IsNullOrEmpty(entity.Id))
             {
                 throw new DuplicateNameException("Duplicate category name: " + name);
             }

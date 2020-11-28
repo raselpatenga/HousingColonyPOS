@@ -36,10 +36,8 @@ namespace DatabaseContext.Migrations
 
             modelBuilder.Entity("Models.Models.Categories.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
@@ -93,6 +91,9 @@ namespace DatabaseContext.Migrations
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CategoriesId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -158,7 +159,7 @@ namespace DatabaseContext.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoriesId");
 
                     b.ToTable("Products");
                 });
@@ -244,9 +245,7 @@ namespace DatabaseContext.Migrations
 
                     b.HasOne("Models.Models.Categories.Category", "Categories")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoriesId");
                 });
 
             modelBuilder.Entity("Models.Models.SystemUsers.User", b =>

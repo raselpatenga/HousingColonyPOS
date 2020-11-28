@@ -10,7 +10,7 @@ namespace Models.Models.Categories
 {
     public class Category: BaseModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public virtual int GroupId { get; set; }
         public Group Group { get; set; }    

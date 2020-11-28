@@ -8,6 +8,7 @@ using Common.IServices;
 using Common.Responses;
 using Common.ViewModels.CategoryViewModels;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
 using Models.Models.Categories;
 using Repository;
 using System;
@@ -25,7 +26,7 @@ namespace Models.Service
         private readonly IMapper _mapper;
         private IUnitOfWork _work;
 
-        public CategoryService(IRepository<Category> repository, ICategoryManager manager, IMapper mapper, IUnitOfWork work)
+        public CategoryService(IRepository<Category> repository,  ICategoryManager manager, IMapper mapper, IUnitOfWork work)
         {
             _manager = manager;
             _repository = repository;
@@ -50,7 +51,7 @@ namespace Models.Service
         public async Task<ApiResponse> Add(CategoryDTO input)
         {
             var entity = _mapper.Map<Category>(input);
-
+            entity.Id = Guid.NewGuid().ToString();
             try
             {
                 entity = await _manager.CreateAsync(entity);
@@ -68,7 +69,7 @@ namespace Models.Service
 
         public async Task<ApiResponse> Update(CategoryDTO input)
         {
-            var entity = await _repository.GetAsync(input.Id);
+            var entity = await _repository.FirstOrDefault(x=>x.Id == input.Id);
             if (entity == null)
                 return ResponseHelper.CreateErrorResponse(string.Format(Constants.NotFound, input.Name));
 
@@ -91,9 +92,9 @@ namespace Models.Service
         }
 
 
-        public async Task<ApiResponse> GetById(int id)
+        public async Task<ApiResponse> GetById(string id)
         {
-            var smartFolder = await _repository.FindAsync(r => r.Id == id, true, default(CancellationToken));
+            var smartFolder = await _repository.FirstOrDefault(x => x.Id == id);
 
             if (smartFolder == null)
                 return ResponseHelper.CreateGetSuccessResponse(string.Format(Constants.NotFound, "Smart Folder"));
@@ -111,9 +112,16 @@ namespace Models.Service
             return ResponseHelper.CreateGetSuccessResponse(lstCategoryViewModel);
         }
 
-        public Task<ApiResponse> Delete(int Id)
+        public Task<ApiResponse> Delete(string Id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ApiResponse> GroupDropdown()
+        {
+            var groups = new List<Select>();
+            groups.Add(new Select { Id = 1, Text = "group-1" });
+            return ResponseHelper.CreateGetSuccessResponse(groups);
         }
     }
 }

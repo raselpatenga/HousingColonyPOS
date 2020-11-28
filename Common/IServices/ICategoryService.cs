@@ -11,8 +11,9 @@ namespace Common.IServices
         Task<ApiResponse> GetAll(CategoryFilterDTO categoryFilter);
         Task<ApiResponse> Add(CategoryDTO categoryDTO);
         Task<ApiResponse> Update(CategoryDTO categoryDTO);
-        Task<ApiResponse> GetById(int id);
+        Task<ApiResponse> GetById(string id);
         Task<ApiResponse> Search(string searchText);
-        Task<ApiResponse> Delete(int Id);
+        Task<ApiResponse> Delete(string Id);
+        Task<ApiResponse> GroupDropdown();
     }
 }

@@ -19,6 +19,9 @@ namespace DatabaseContext.EntityConfiguration
 
             builder.HasOne(r => r.Group)
                    .WithMany(r => r.Categories);
+
+            builder.Property(et => et.Id)
+                    .ValueGeneratedNever();
         }
 
     }

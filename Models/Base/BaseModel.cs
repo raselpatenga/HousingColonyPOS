@@ -16,4 +16,5 @@ namespace Models.Models.Base
     {
         public virtual TKey Id { get; set; }
     }
+
 }
